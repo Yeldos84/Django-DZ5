@@ -1,11 +1,22 @@
 from django.db import models
-
+from django.shortcuts import reverse
+from django.core.exceptions import ValidationError
+from django.core import validators
+from django.core.validators import MinLengthValidator,  RegexValidator
 # Create your models here.
+
 class Author(models.Model):
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, validators=[MinLengthValidator(limit_value=3, message=">3")])
     birth_date = models.DateField("date published")
+    digit_field = models.CharField(max_length=10, default=0, validators=[
+        validators.RegexValidator(regex=r'^[-+]?([1-9]\d*|0)$', message='Only digits')])
     def __str__(self):
-        return self.name
+        return f'ID: {self.pk}, {self.name}, {self.digit_field}'
+
+    # def get_absolute_url(self):
+    #     return f'author/{self.name}/'
+    #     # return reverse('index', kwargs={'name': self.name})
+
 
 class Book(models.Model):
     title = models.CharField(max_length=100)

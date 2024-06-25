@@ -3,6 +3,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from .models import Author, Book, Publisher, User, BookInstance, Genre
 from django import forms
 from .forms import AuthorForm, BookForm, PublisherForm
+from django.core.exceptions import ValidationError
 
 # Create your views here.
 
@@ -12,10 +13,12 @@ models_name_dict = {
     'Publisher': "Publisher"
 }
 
-
-
+name_class = [Author.__name__, Book.__name__, Publisher.__name__]
 def main(request):
-    return render(request, "library/main.html")
+    context = {
+        "name_class": name_class,
+    }
+    return render(request, "library/main.html", context=context)
 
 
 def index(request):
@@ -24,8 +27,9 @@ def index(request):
         if form.is_valid():
             save_db(form)
             name = form.cleaned_data['name']
+            author_id = Author.objects.all()
             # return redirect('/users/succes', {'form': form})
-            return render(request, "library/succes.html", {"form": form, "name": name})
+            return render(request, "library/succes.html", {"form": form, "name": name, 'author_id':author_id})
     else:
         form = AuthorForm()
         html_name = models_name_dict.get('Author')
@@ -78,6 +82,6 @@ def save_publisher(form):
     name = form.cleaned_data['name']
     address = form.cleaned_data['address']
     books = form.cleaned_data['books']
-    Publisher.objects.create(name=name, address=address,books=books)
+    Publisher.objects.create(name=name, address=address).books.set(books)
 
 

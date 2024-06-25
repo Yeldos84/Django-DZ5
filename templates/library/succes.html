@@ -6,6 +6,12 @@
 </head>
 <body>
     <h1>Succes!</h1>
-<!--    <h2>Author name: {{name|upper }}</h2>-->
+    <h2>Author name: {{name|upper }}</h2>
+
+    {% for author in author_id %}
+        <p>{{author}}</p>
+    {% endfor %}
+
+    <button><a href="/">Back</a></button>
 </body>
 </html>
