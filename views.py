@@ -44,10 +44,14 @@ def book(request):
     if request.method == 'POST':
         form = BookForm(request.POST)
         if form.is_valid():
+            visits = request.session.get('visits', 0)
+            visits += 1
+            request.session['visits'] = visits
             save_books(form)
             title = form.cleaned_data['title']
             # return redirect('/users/succes', {'form': form})
-            return render(request, "library/succes.html", {"form": form, "title": title})
+            return render(request, "library/succes.html", {"form": form, "title": title, 'visits': visits})
+            # return HttpResponse(f'{visits}')
     else:
         form = BookForm()
         html_name = models_name_dict.get('Book')
