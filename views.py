@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect,JsonResponse
 from .models import Author, Book, Publisher, User, BookInstance, Genre
 from django import forms
 from .forms import AuthorForm, BookForm, PublisherForm
@@ -89,3 +89,8 @@ def save_publisher(form):
     Publisher.objects.create(name=name, address=address).books.set(books)
 
 
+def _list_to_json(request):
+    lst1 = [x*2 for x in range(10)]
+    lst2 = [a*3 for a in range(10)]
+    d = dict(zip(lst1,lst2))
+    return JsonResponse(d)
